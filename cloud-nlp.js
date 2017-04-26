@@ -6,7 +6,6 @@ Replace YOUR_API_KEY in the nlRequestUri variable below with your Google API key
 
 Input: reddit-comments.json in the same path.
 Output: output.json in the same path.
-
 */
 
 'use strict';
