@@ -1,4 +1,5 @@
 /*
+
 This file was created by Sara Robinson at https://gist.github.com/sararob/b0b299cad9c1aa7558cedbdf95fad65f.
 It was mentioned in the article at https://hackernoon.com/how-people-talk-about-marijuana-on-reddit-a-natural-language-analysis-a8d595882a7a.
 
@@ -6,6 +7,7 @@ Replace YOUR_API_KEY in the nlRequestUri variable below with your Google API key
 
 Input: reddit-comments.json in the same path.
 Output: output.json in the same path.
+
 */
 
 'use strict';
