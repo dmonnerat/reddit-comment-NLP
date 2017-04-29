@@ -8,13 +8,23 @@ Replace YOUR_API_KEY in the nlRequestUri variable below with your Google API key
 Input: reddit-comments.json in the same path.
 Output: output.json in the same path.
 
+History
+------
+4/19/17 Initial release (Sara Robinson)
+4/28/17 Modified to use throttled request library to work within Googles transaction quota
 */
 
 'use strict';
 
 const fs = require('fs');
 const ndjson = require('ndjson');
-const request = require('request');
+const request = require('request')
+,   throttledRequest = require('throttled-request')(request);
+
+throttledRequest.configure({
+  requests: 5,
+  milliseconds: 1000
+});//This will throttle the requests so no more than 5 are made every second
 
 fs.createReadStream('reddit-comments.json') // Newline delimited JSON file
   .pipe(ndjson.parse())
@@ -42,7 +52,7 @@ fs.createReadStream('reddit-comments.json') // Newline delimited JSON file
 			  json: true
 		  }
 
-		request(reqOptions, function(err, resp, respBody) {
+		throttledRequest(reqOptions, function(err, resp, respBody) {
 			if (!err && resp.statusCode == 200) {
 
 				if (respBody.language === 'en') {
@@ -54,7 +64,12 @@ fs.createReadStream('reddit-comments.json') // Newline delimited JSON file
 						tokens: respBody.tokens,
 						text: text,
 						comment_score: parseInt(obj.score),
-						created: obj.date_posted
+						created: obj.created_utc,
+            subreddit: obj.subreddit,
+            author: obj.author,
+            ups: obj.ups,
+            downs: obj.downs,
+            date_posted: obj.date_posted
 					}
           // Newline delimited JSON because that's the format we need to upload to BigQuery
 					fs.appendFileSync('output.json', JSON.stringify(row) + '\n');
